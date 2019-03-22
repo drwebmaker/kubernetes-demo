@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "typeRoots": ["node_modules/@types", "node_modules/bunyan-middleware/index.d.ts", "node_modules/vizabi-ddfcsv-reader/lib/src/index.d.ts"]
+  },
+  "lib": [
+    "es2017",
+    "dom"
+  ],
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "lib",
+    "coverage",
+    "**/*.spec.ts",
+    "**/*.int-spec.ts",
+    "node_modules",
+    "test-bb",
+    "test"
+  ]
+}
