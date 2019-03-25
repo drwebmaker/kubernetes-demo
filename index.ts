@@ -7,25 +7,16 @@ import { createRedis } from './redis.helpers'
 import * as _ from 'lodash';
 
 import {
-    setDefaultUser,
-    createProject,
-    setDefaultProject,
-    setupAPIs,
-    linkProjectToBilling,
     getGcpInstances,
-    createInstanceCms,
-    pushImageNode,
     createCluster,
     createPods,
     setupAutoscale,
     setupLoadbalancer,
-    printExternalIPs,
     pushImageTM,
     createReplicas,
-    setupGcloudContainerConfig,
-    getLoadbalancerExternalIP,
     getClusterSplachIngernalIp,
-} from './autodeploy.helpers';
+    createInstanceCms
+} from './deploy.helpers';
 
 
 // Default variables
