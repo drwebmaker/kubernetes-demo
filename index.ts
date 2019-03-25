@@ -8,14 +8,22 @@ import * as _ from 'lodash';
 
 import {
     getGcpInstances,
+    createClusterSplash,
     createCluster,
+    createPodsSplash,
     createPods,
+    setupAutoscaleSplash,
     setupAutoscale,
+    setupLoadbalancerSplash,
     setupLoadbalancer,
     pushImageTM,
+    createReplicasSplash,
     createReplicas,
-    getClusterSplachIngernalIp,
-    createInstanceCms
+    getClusterSplachInternalIp,
+    getClusterSplachExternalIp,
+    createInstanceCms,
+    createInstanceDs,
+    pushImageDs,
 } from './deploy.helpers';
 
 
@@ -158,15 +166,28 @@ export async function run() {
         await pushImageTM(context, ()=>{});
         await createRedis(context, ()=>{});
     }
+    await getClusterSplachExternalIp(context, ()=>{});
 
-    const clusterSplachIngernalIp = getClusterSplachIngernalIp(context, ()=>{});
+    const clusterSplachIngernalIp = await getClusterSplachInternalIp(context, ()=>{});
     if (_.isEmpty(clusterSplachIngernalIp)) {
-        await createCluster(context, ()=>{});
-        await createPods(context, ()=>{});
-        await createReplicas(context, ()=>{});
-        await setupAutoscale(context, ()=>{});
-        await setupLoadbalancer(context, ()=>{});
+        await createClusterSplash(context, ()=>{});
+        await createPodsSplash(context, ()=>{});
+        await createReplicasSplash(context, ()=>{});
+        await setupAutoscaleSplash(context, ()=>{});
+        await setupLoadbalancerSplash(context, ()=>{});
+
+        getClusterSplachInternalIp(context, ()=>{});
+        getClusterSplachExternalIp(context, ()=>{});
     }
+
+    await createInstanceDs (context, ()=>{});
+    await pushImageDs (context, ()=>{});
+
+    await createCluster (context, ()=>{});
+    await createPods (context, ()=>{});
+    await createReplicas (context, ()=>{});
+    await setupAutoscale (context, ()=>{});
+    await setupLoadbalancer (context, ()=>{});
 
 
 
