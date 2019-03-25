@@ -285,3 +285,14 @@ export function setupLoadbalancer (externalContext: any, cb: Function): void {
 
     return commonHelpers.runShellCommand(command, options, (error: string) => cb(error, externalContext));
 }
+
+export function getClusterSplash(externalContext: any, cb: Function): any {
+    const {
+        CLUSTER_SPLASH_NAME
+    } = externalContext;
+
+    const command = `kubectl get service ${CLUSTER_SPLASH_NAME}`;
+    const options: ExecOptions = {};
+
+    return commonHelpers.runShellCommand(command, options, (error: string) => cb(error, externalContext));
+}

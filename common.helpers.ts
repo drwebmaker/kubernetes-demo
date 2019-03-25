@@ -19,8 +19,6 @@ const {
 
 export function runShellCommand (command: string, options: any, cb: AsyncResultCallback<ExecOutputReturnValue | ChildProcess | string, string>): void {
 
-  // throw new Error('dssdfdsf');
-
   let outputParam = '';
   switch (true) {
     case _.includes(command, 'gcloud compute') && !_.includes(command, '--quiet'):
