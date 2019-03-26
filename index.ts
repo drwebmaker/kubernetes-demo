@@ -35,17 +35,76 @@ const DEFAULT_CONFIG = require('./deployment_config.default.json');
 function setupEnvironment(): any {
     const {
         DEFAULT_NODE_ENV,
-        DEFAULT_PATH_TO_CONFIG_FILE,
-        DEFAULT_ENVIRONMENTS,
-        DEFAULT_TM_PORTS,
-        DEFAULT_WS_PORTS,
-        DEFAULT_MACHINE_TYPES,
-        DEFAULT_DISK_SIZES,
-        DEFAULT_IMAGE_NAME_SUFFIXES,
-        DEFAULT_GCP_VARIABLES,
-        DEFAULT_GCP_API,
-        DEFAULT_REQUIRED_PARAMETERS
+        DEFAULT_BUILD_ENV,
+        DEFAULT_ID_PROJECT,
+        DEFAULT_ZONE,
+        DEFAULT_SOCKETS_PORT,
+        DEFAULT_EXTERNAL_PORT,
+        DEFAULT_INTERNAL_PORT,
+        DEFAULT_SPLASH_EXTERNAL_PORT,
+        DEFAULT_CLUSTER_MACHINE_TYPE,
+        DEFAULT_NUM_NODES_IN_CLUSTER,
+        DEFAULT_MAX_NODES_IN_CLUSTER,
+        DEFAULT_MIN_NODES_IN_CLUSTER,
+        DEFAULT_NUMBER_REPLICAS,
+        DEFAULT_MIN_NUMBER_REPLICAS,
+        DEFAULT_MAX_NUMBER_REPLICAS,
+        DEFAULT_S3_REGION
     } = DEFAULT_CONFIG; // placed it here for testing purpose
+
+
+    const d = new Date();
+    const TAG = `${d.getFullYear()}-${(d.getMonth()+1)}-${d.getDate()}`;
+    const TRAVIS_COMMIT = $(git rev-parse HEAD)
+    const RELEASE = `ds-${TAG}-${DEFAULT_NODE_ENV}`;
+    const PORT = DEFAULT_INTERNAL_PORT;
+    const IMAGE_NAME_CMS = `${DEFAULT_NODE_ENV}-cms`;
+    const INSTANCE_NAME_CMS = `${RELEASE}-cms`;
+    const CLUSTER_SPLASH_NAME = `${RELEASE}-splash`;
+
+    const NODE_ENV = process.env.NODE_ENV || DEFAULT_NODE_ENV;
+    const BUILD_ENV = process.env.BUILD_ENV || DEFAULT_BUILD_ENV;
+    const ID_PROJECT = process.env.ID_PROJECT || DEFAULT_ID_PROJECT;
+    const ZONE = process.env.ZONE || DEFAULT_ZONE;
+    const SOCKETS_PORT = process.env.SOCKETS_PORT || DEFAULT_SOCKETS_PORT;
+    const EXTERNAL_PORT = process.env.EXTERNAL_PORT || DEFAULT_EXTERNAL_PORT;
+    const INTERNAL_PORT = process.env.INTERNAL_PORT || DEFAULT_INTERNAL_PORT;
+    const SPLASH_EXTERNAL_PORT = process.env.SPLASH_EXTERNAL_PORT || DEFAULT_SPLASH_EXTERNAL_PORT;
+    const CLUSTER_MACHINE_TYPE = process.env.CLUSTER_MACHINE_TYPE || DEFAULT_CLUSTER_MACHINE_TYPE;
+    const NUM_NODES_IN_CLUSTER = process.env.NUM_NODES_IN_CLUSTER || DEFAULT_NUM_NODES_IN_CLUSTER;
+    const MAX_NODES_IN_CLUSTER = process.env.MAX_NODES_IN_CLUSTER || DEFAULT_MAX_NODES_IN_CLUSTER;
+    const MIN_NODES_IN_CLUSTER = process.env.MIN_NODES_IN_CLUSTER || DEFAULT_MIN_NODES_IN_CLUSTER;
+    const NUMBER_REPLICAS = process.env.NUMBER_REPLICAS || DEFAULT_NUMBER_REPLICAS;
+    const MIN_NUMBER_REPLICAS = process.env.MIN_NUMBER_REPLICAS || DEFAULT_MIN_NUMBER_REPLICAS;
+    const MAX_NUMBER_REPLICAS = process.env.MAX_NUMBER_REPLICAS || DEFAULT_MAX_NUMBER_REPLICAS;
+    const S3_REGION = process.env.S3_REGION || DEFAULT_S3_REGION;
+
+
+    const primaryContext = {
+        TAG,
+        TRAVIS_COMMIT,
+        RELEASE,
+        PORT,
+        IMAGE_NAME_CMS,
+        INSTANCE_NAME_CMS,
+        CLUSTER_SPLASH_NAME,
+        NODE_ENV,
+        BUILD_ENV,
+        ID_PROJECT,
+        ZONE,
+        SOCKETS_PORT,
+        EXTERNAL_PORT,
+        INTERNAL_PORT,
+        SPLASH_EXTERNAL_PORT,
+        CLUSTER_MACHINE_TYPE,
+        NUM_NODES_IN_CLUSTER,
+        MAX_NODES_IN_CLUSTER,
+        MIN_NODES_IN_CLUSTER,
+        NUMBER_REPLICAS,
+        MIN_NUMBER_REPLICAS,
+        MAX_NUMBER_REPLICAS,
+        S3_REGION
+        };
 
     // Computed variables
     const NODE_ENV = process.env.NODE_ENV || DEFAULT_NODE_ENV;
@@ -139,22 +198,24 @@ function setupEnvironment(): any {
         MACHINE_TYPES: Object.assign({}, DEFAULT_MACHINE_TYPES)
     });
 
-    const primaryContext = Object.assign({
-        COMPUTED_VARIABLES,
-        DEFAULT_MACHINE_TYPES,
-        DEFAULT_IMAGE_NAME_SUFFIXES,
-        DEFAULT_TM_PORTS,
-        DEFAULT_WS_PORTS,
-        DEFAULT_GCP_API
-    }, GCP_VARIABLES);
+    // const primaryContext = Object.assign({
+    //     COMPUTED_VARIABLES,
+    //     DEFAULT_MACHINE_TYPES,
+    //     DEFAULT_IMAGE_NAME_SUFFIXES,
+    //     DEFAULT_TM_PORTS,
+    //     DEFAULT_WS_PORTS,
+    //     DEFAULT_GCP_API
+    // }, GCP_VARIABLES);
 
     const contextTM: GCloudArguments = getContextInstance(primaryContext, 'TM');
     const contextNode: GCloudArguments = getContextInstance(primaryContext, 'WS'); // 'WS'
 
-    return Object.assign(primaryContext, {
-        TM_INSTANCE_VARIABLES: contextTM,
-        NODE_INSTANCE_VARIABLES: contextNode
-    });
+    // return Object.assign(primaryContext, {
+    //     TM_INSTANCE_VARIABLES: contextTM,
+    //     NODE_INSTANCE_VARIABLES: contextNode
+    // });
+
+    return primaryContext;
 }
 
 export async function run() {

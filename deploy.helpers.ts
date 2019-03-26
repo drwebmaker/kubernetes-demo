@@ -294,7 +294,7 @@ export function getClusterSplash(externalContext: any): any {
     const command = `kubectl get service ${CLUSTER_SPLASH_NAME}`;
     const options: ExecOptions = {};
 
-    return runSellCommandWrapper(command,options);
+    runSellCommandWrapper(command, options);
 }
 
 function runSellCommandWrapper(command, options) {
