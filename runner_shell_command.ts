@@ -2,8 +2,8 @@ import * as shell from 'shelljs';
 import * as _ from 'lodash';
 
 const context = {
-    PROJECT_ID: 'mongodb-cloud',
-    BILLING_ACCOUNT: '0X0X0X-0X0X0X-0X0X0X',
+    PROJECT_ID: 'deft-upgrade-234611ad',
+    BILLING_ACCOUNT: '0118E3-DAEA99-D85224',
 };
 
 function runShellCommand(command) {
@@ -12,7 +12,9 @@ function runShellCommand(command) {
     if(result.code !== 0) {
         shell.echo(stderr);
         shell.exit(1);
+        return stderr;
     }
+    return stdout;
 }
 
 function getProjectInstances(context) {
@@ -21,7 +23,7 @@ function getProjectInstances(context) {
     } = context;
 
     const command = `gcloud projects list --filter="${PROJECT_ID}"`;
-    runShellCommand(command);
+    return runShellCommand(command);
 }
 
 function createGcpProject(context) {
@@ -33,18 +35,26 @@ function createGcpProject(context) {
     runShellCommand(command);
 }
 
+function isBillingAccountCreated(billingAccountId) {
+    const command = `gcloud beta billing accounts list --filter="${billingAccountId}"`;
+    const result = runShellCommand(command);
+    return !_.isEmpty(result);
+}
+
 function linkProjectToBilling(context) {
     const {
         PROJECT_ID,
         BILLING_ACCOUNT
     } = context;
 
-    const command = `gcloud beta billing projects link ${PROJECT_ID} --billing-account=${BILLING_ACCOUNT}`;
-    runShellCommand(command);
+    if (isBillingAccountCreated(BILLING_ACCOUNT)) {
+        const command = `gcloud beta billing projects link ${PROJECT_ID} --billing-account=${BILLING_ACCOUNT}`;
+        runShellCommand(command);
+    }
 }
 
 function getGcpInstanceList() {
-    const command = `gcloud compute instances lis`;
+    const command = `gcloud compute instances list`;
     runShellCommand(command);
 }
 
@@ -54,6 +64,5 @@ const gcp_project_instances = getProjectInstances(context);
 if (_.isEmpty(gcp_project_instances)) {
     createGcpProject(context);
     linkProjectToBilling(context);
-    getGcpInstanceList;
 }
-
+    getGcpInstanceList();
