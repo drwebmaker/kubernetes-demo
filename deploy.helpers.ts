@@ -286,7 +286,7 @@ export function setupLoadbalancer (externalContext: any, cb: Function): void {
     return commonHelpers.runShellCommand(command, options, (error: string) => cb(error, externalContext));
 }
 
-export function getClusterSplash(externalContext: any, cb: Function): any {
+export function getClusterSplash(externalContext: any): any {
     const {
         CLUSTER_SPLASH_NAME
     } = externalContext;
@@ -294,5 +294,17 @@ export function getClusterSplash(externalContext: any, cb: Function): any {
     const command = `kubectl get service ${CLUSTER_SPLASH_NAME}`;
     const options: ExecOptions = {};
 
-    return commonHelpers.runShellCommand(command, options, (error: string) => cb(error, externalContext));
+    return runSellCommandWrapper(command,options);
+}
+
+function runSellCommandWrapper(command, options) {
+
+    return new Promise((resolve, reject) => {
+        return commonHelpers.runShellCommand(command, options, (error: string) => (error: string, result: any): void => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(result);
+        });
+    });
 }

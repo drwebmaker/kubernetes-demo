@@ -180,13 +180,13 @@ export async function run() {
 
         let attempt_counter=0;
         const max_attempts=20;
-        const clusterSplash = await getClusterSplash(context, ()=>{});
+        const clusterSplash = await getClusterSplash(context);
         while (clusterSplash.length === 0) {
             if(attempt_counter === max_attempts) {
                 throw new Error('Max attempts to get Cluster splash internal IP were reached');
             }
             attempt_counter++;
-            _.delay(getClusterSplash, 5000, [context, ()=>{}]);
+            _.delay(getClusterSplash, 5000, [context]);
         }
 
         getClusterSplachInternalIp(context, ()=>{});
